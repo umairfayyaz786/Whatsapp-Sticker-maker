@@ -36,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -60,6 +61,13 @@ public class MainActivity extends AddStickerPackActivity implements CheckRefresh
         bottomAppBar = findViewById(R.id.bottom_app_bar);
         setSupportActionBar(bottomAppBar);
 
+        //CLICK LISTENER FOR NAVIGATION ICON
+        bottomAppBar.setNavigationOnClickListener(v -> {
+                    ShowRoundDialogFragment showRoundDialogFragment = new ShowRoundDialogFragment();
+                    showRoundDialogFragment.show(getSupportFragmentManager(), "add");
+                }
+        );
+        //----------------------------------
         Fresco.initialize(this);
         this.setupFragments();
 

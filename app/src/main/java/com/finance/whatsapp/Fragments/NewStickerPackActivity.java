@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -114,7 +115,7 @@ public class NewStickerPackActivity extends AppCompatActivity {
     }
 
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_STORAGE_PERMISSION) {
@@ -124,10 +125,10 @@ public class NewStickerPackActivity extends AppCompatActivity {
                 Toast.makeText(this, "Permission denied. Cannot proceed.", Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    }*/
 
 
-    private void selectImages() {
+    /*private void selectImages() {
         empty.setVisibility(View.GONE);
         FishBun.with(NewStickerPackActivity.this)
                 .setImageAdapter(new GlideAdapter())
@@ -136,7 +137,59 @@ public class NewStickerPackActivity extends AppCompatActivity {
                 .setActionBarColor(Color.parseColor("#fead00"), Color.parseColor("#fead00"), false)
                 .setMinCount(3).setActionBarTitleColor(Color.parseColor("#ffffff"))
                 .startAlbum();
+    }*/
+
+    //NEW CODE FOR SELECT IMAGES
+    //-------------------------------------------------------------------------------------------------------------------
+    private static final int REQUEST_SELECT_IMAGE = 102;
+
+    private void selectImages() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+        } else {
+            openGallery();
+        }
     }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        startActivityForResult(Intent.createChooser(intent, "Select Images"), REQUEST_SELECT_IMAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_STORAGE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SELECT_IMAGE && resultCode == RESULT_OK) {
+            if (data != null) {
+                if (data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount();
+                    for (int i = 0; i < count; i++) {
+                        Uri imageUri = data.getClipData().getItemAt(i).getUri();
+                        imageAdapter.uries.add(imageUri);
+                    }
+                } else if (data.getData() != null) {
+                    Uri imageUri = data.getData();
+                    imageAdapter.uries.add(imageUri);
+                }
+                imageAdapter.notifyDataSetChanged(); // Update the GridView
+                ((TextView) findViewById(R.id.stickers_selected_textview))
+                        .setText(imageAdapter.uries.size() + " stickers selected");
+            }
+        }
+    }
+    //-------------------------------------------------------------------------------------------------------------------
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -210,11 +263,10 @@ public class NewStickerPackActivity extends AppCompatActivity {
         getContentResolver().insert(StickerContentProvider.AUTHORITY_URI, contentValues);
     }
 
-    @Override
+    /*@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Define.ALBUM_REQUEST_CODE) {
-
             ArrayList<Uri> uries;
             if (resultCode == RESULT_OK) {
                 uries = data.getParcelableArrayListExtra(Define.INTENT_PATH);
@@ -225,7 +277,7 @@ public class NewStickerPackActivity extends AppCompatActivity {
                 }
             }
         }
-    }
+    }*/
 
     class ImageAdapter extends BaseAdapter {
         private Context mContext;
