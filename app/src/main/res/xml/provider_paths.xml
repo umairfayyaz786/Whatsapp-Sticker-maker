@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Path to shared folder in app-specific storage -->
+    <files-path
+        name="stickers"
+        path="stickers/" />
+    <!-- Path to cache folder -->
+    <cache-path
+        name="cache"
+        path="cache/" />
+    <!-- Path to external storage (if required) -->
+    <external-path
+        name="external_stickers"
+        path="stickers/" />
+</paths>

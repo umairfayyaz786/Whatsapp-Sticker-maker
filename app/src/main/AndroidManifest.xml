@@ -1,0 +1,85 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:requestLegacyExternalStorage="true"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:enabled="true" />
+        <activity
+            android:name=".Fragments.NewStickerPackActivity"
+            android:enabled="true" />
+
+        <meta-data
+            android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+            android:value="true" />
+
+        <!-- Activity declarations -->
+        <activity
+            android:name=".WhatsappApi.StickerPackDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.finance.whatsapp.Fragments.AddToStickerPackActivity"
+            android:label="Add to sticker pack"
+            android:theme="@style/MixAppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <!-- Provider with unique authorities -->
+        <provider
+            android:name="com.finance.whatsapp.WhatsappApi.StickerContentProvider"
+            android:authorities="${applicationId}.stickercontentprovider"
+            android:enabled="true"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:readPermission="com.whatsapp.sticker.READ"
+            android:writePermission="com.whatsapp.sticker.WRITE">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.easyphotopicker.fileprovider"
+            android:enabled="true"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="androidx.core.content.FileProvider"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+
+        <!-- Launcher Activity -->
+        <activity
+            android:name="com.finance.whatsapp.Fragments.RequestPermissionActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+</manifest>
